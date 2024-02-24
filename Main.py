@@ -44,8 +44,9 @@ def search_button():
         music_link = link_entry.get()
         if music_link == "":
                 toplevel_screen()
-
-              
+        elif not music_link.startswith("https://youtu.be/"):
+                toplevel_screen()
+                
 
 youtube_label = customtkinter.CTkLabel(master=screen,text="Youtube",font=FONT_1,text_color="green")
 youtube_label.place(x=50,y=30)
