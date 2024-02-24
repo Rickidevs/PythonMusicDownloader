@@ -21,6 +21,7 @@ screen.geometry("400x500")
 customtkinter.set_appearance_mode("dark")
 screen.title("Youtube Music Downloader")
 screen.iconbitmap(default=ICON_PATH)
+screen.resizable(False, False)
 
 FONT_1=("Arial",25,"bold")
 FONT_2=("Arial",50,"bold")
@@ -36,16 +37,21 @@ def toplevel_screen():
             toplevel.title("WARNING")
             toplevel.geometry("+%d+%d" % (screen.winfo_x()+90, screen.winfo_y()+240))
             toplevel.geometry("250x100")
+            toplevel.resizable(False, False)
             label = customtkinter.CTkLabel(toplevel, text="invalid Youtube link!\nTry again with a valid link :)", font=FONT_5)
             label.pack(padx=20, pady=20)
             toplevel.grab_set()
 
+
+
 def search_button():
         music_link = link_entry.get()
         if music_link == "":
-                toplevel_screen()
+            toplevel_screen()
         elif not music_link.startswith("https://youtu.be/"):
-                toplevel_screen()
+            toplevel_screen()
+        else:
+            pass
                 
 
 youtube_label = customtkinter.CTkLabel(master=screen,text="Youtube",font=FONT_1,text_color="green")
