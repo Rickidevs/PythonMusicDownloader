@@ -1,6 +1,8 @@
 from tkinter import *
 import customtkinter
 import tempfile, base64, zlib
+from pytube import YouTube
+
 
 # for remove tk iconbit
 ICON = zlib.decompress(base64.b64decode('eJxjYGAEQgEBBiDJwZDBy'
@@ -9,6 +11,7 @@ ICON = zlib.decompress(base64.b64decode('eJxjYGAEQgEBBiDJwZDBy'
 _, ICON_PATH = tempfile.mkstemp()
 with open(ICON_PATH, 'wb') as icon_file:
     icon_file.write(ICON)
+
 
 
 
@@ -23,7 +26,26 @@ FONT_1=("Arial",25,"bold")
 FONT_2=("Arial",50,"bold")
 FONT_3=("Arial",30,"bold")
 FONT_4=("Arial",15)
+FONT_5=("Arial",16,"bold")
 
+
+
+def toplevel_screen():
+            
+            toplevel = customtkinter.CTkToplevel(screen)  # Pass the main window as the parent
+            toplevel.title("WARNING")
+            toplevel.geometry("+%d+%d" % (screen.winfo_x()+90, screen.winfo_y()+240))
+            toplevel.geometry("250x100")
+            label = customtkinter.CTkLabel(toplevel, text="invalid Youtube link!\nTry again with a valid link :)", font=FONT_5)
+            label.pack(padx=20, pady=20)
+            toplevel.grab_set()
+
+def search_button():
+        music_link = link_entry.get()
+        if music_link == "":
+                toplevel_screen()
+
+              
 
 youtube_label = customtkinter.CTkLabel(master=screen,text="Youtube",font=FONT_1,text_color="green")
 youtube_label.place(x=50,y=30)
@@ -55,9 +77,11 @@ search_button = customtkinter.CTkButton(master=screen,
                                  text="Search",
                                  text_color="white",
                                  hover_color="light green",
-                                 font=FONT_4
+                                 font=FONT_4,
+                                 command=search_button
                                  )
 
 search_button.place(x=290,y=180)
+
 
 screen.mainloop()
