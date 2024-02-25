@@ -155,6 +155,8 @@ def about_music():
       music_thub_label = customtkinter.CTkLabel(master=screen,image=tkimage,text="")
       music_thub_label.place(x=20,y=250)
       music_title_label = customtkinter.CTkLabel(master=screen,bg_color="gray20",text=music_title,font=FONT_6,)
+      music_symbol_label = customtkinter.CTkLabel(master=screen,bg_color='gray20',text="▶• ılıılıılıılıılıılı.",font=FONT_1)
+      music_symbol_label.place(x=168,y=290)
 
       if len(music_title) > 20:
             music_edited_title = music_title[:20]
@@ -221,8 +223,6 @@ music_label.place(x=70,y=55)
 
 downloader_label = customtkinter.CTkLabel(master=screen,text="Downloader",font=FONT_3,text_color="green")
 downloader_label.place(x=105,y=105)
-
-
 
 link_entry = customtkinter.CTkEntry(master=screen,
                                placeholder_text="Enter Youtube music link",
