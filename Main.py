@@ -95,7 +95,7 @@ def do_download(url):
             prosess_on()
         else:
             loading_label = customtkinter.CTkLabel(master=screen,text="Please wait, Downloading...",font=FONT_1)
-            loading_label.place(x=20,y=360)
+            loading_label.place(x=20,y=390)
             stream = yt.streams.filter(only_audio=True).first()
             downloaded_file = stream.download(path_to_download)
             base, ext = os.path.splitext(downloaded_file)
@@ -104,7 +104,7 @@ def do_download(url):
             loading_label.configure(text="")
             is_download = False
             copleted_label = customtkinter.CTkLabel(master=screen,text=f"Completed: {path_to_download}",font=FONT_5,wraplength=300)
-            copleted_label.place(x=20,y=360)
+            copleted_label.place(x=20,y=390)
     except Exception as e:
         print(f"Download error: {e}") 
 
@@ -123,17 +123,26 @@ def about_music():
       image = Image.open(requests.get(url, stream=True).raw)
       new_size = (170, 140)  
       resized_image = image.resize(new_size) 
+      bg_modern_label = customtkinter.CTkFrame(master=screen,
+                               width=380,
+                               height=140,
+                               fg_color="gray20",
+                               border_width=2,
+                               border_color="gray25",
+                               corner_radius=20)
+      bg_modern_label.place(x=10,y=240)
+
       tkimage = ImageTk.PhotoImage(resized_image)
       music_thub_label = customtkinter.CTkLabel(master=screen,image=tkimage,text="")
-      music_thub_label.place(x=20,y=230)
-      music_title_label = customtkinter.CTkLabel(master=screen,text=music_title,font=FONT_6,)
+      music_thub_label.place(x=20,y=250)
+      music_title_label = customtkinter.CTkLabel(master=screen,bg_color="gray20",text=music_title,font=FONT_6,)
 
       if len(music_title) > 20:
             music_edited_title = music_title[:20]
-            music_title_label.configure(text=f"{music_edited_title}....")
-            music_title_label.place(x=168, y= 230)
+            music_title_label.configure(text=f"{music_edited_title}..")
+            music_title_label.place(x=160, y= 250)
       else:
-            music_title_label.place(x=168, y= 230)
+            music_title_label.place(x=160, y= 250)
 
       Download_button = customtkinter.CTkButton(master=screen,
                                  width=80,
@@ -142,13 +151,14 @@ def about_music():
                                  border_width=2,
                                  corner_radius=13,
                                  fg_color="green",
+                                 bg_color="gray20",
                                  text="Download",
                                  text_color="white",
                                  hover_color="light green",
                                  font=FONT_4,
                                  command=start_download_thread
                                  )
-      Download_button.place(x=180,y=310)
+      Download_button.place(x=180,y=330)
 
 def do_search():
     global url
@@ -160,7 +170,7 @@ def do_search():
         toplevel_screen()
     else:
         searching_label = customtkinter.CTkLabel(master=screen,text="Please wait, Searching...",font=FONT_1)
-        searching_label.place(x=20,y=360)
+        searching_label.place(x=20,y=390)
         link_entry.delete(0, END)
         global yt
         yt = YouTube(music_link)
