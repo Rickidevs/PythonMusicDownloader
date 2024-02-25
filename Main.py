@@ -55,11 +55,10 @@ def about_music():
       new_size = (170, 140)  
       resized_image = image.resize(new_size) 
       tkimage = ImageTk.PhotoImage(resized_image)
-      music_thub_label = customtkinter.CTkLabel(master=screen,image=tkimage,width=50,height=50)
+      music_thub_label = customtkinter.CTkLabel(master=screen,image=tkimage)
       music_thub_label.place(x=20,y=230)
-      music_title_label = customtkinter.CTkLabel(master=screen,text=music_title,font=FONT_6)
+      music_title_label = customtkinter.CTkLabel(master=screen,text=music_title,font=FONT_6,wraplength=200)
       music_title_label.place(x=168, y= 230)
-
 
 def search_button():
         music_link = link_entry.get()
@@ -71,6 +70,7 @@ def search_button():
             yt = YouTube(music_link)
             global music_title
             global music_thub
+            global minute , second
             music_title = yt.title
             music_thub = yt.thumbnail_url
             yt.streams.filter(only_audio=True)
