@@ -2,6 +2,11 @@ from tkinter import *
 import customtkinter
 import tempfile, base64, zlib
 from pytube import YouTube
+import requests
+import time
+from PIL import Image,ImageTk
+
+
 
 
 # for remove tk iconbit
@@ -28,8 +33,10 @@ FONT_2=("Arial",50,"bold")
 FONT_3=("Arial",30,"bold")
 FONT_4=("Arial",15)
 FONT_5=("Arial",16,"bold")
+FONT_6=("Times New Roman",20,"bold")
 
-
+music_thub = ""
+music_title=""
 
 def toplevel_screen():
             
@@ -42,6 +49,16 @@ def toplevel_screen():
             label.pack(padx=20, pady=20)
             toplevel.grab_set()
 
+def about_music():
+      url = music_thub
+      image = Image.open(requests.get(url, stream=True).raw)
+      new_size = (170, 140)  
+      resized_image = image.resize(new_size) 
+      tkimage = ImageTk.PhotoImage(resized_image)
+      music_thub_label = customtkinter.CTkLabel(master=screen,image=tkimage,width=50,height=50)
+      music_thub_label.place(x=20,y=230)
+      music_title_label = customtkinter.CTkLabel(master=screen,text=music_title,font=FONT_6)
+      music_title_label.place(x=168, y= 230)
 
 
 def search_button():
@@ -51,7 +68,15 @@ def search_button():
         elif not music_link.startswith("https://youtu.be/"):
             toplevel_screen()
         else:
-            pass
+            yt = YouTube(music_link)
+            global music_title
+            global music_thub
+            music_title = yt.title
+            music_thub = yt.thumbnail_url
+            yt.streams.filter(only_audio=True)
+            about_music()
+
+
                 
 
 youtube_label = customtkinter.CTkLabel(master=screen,text="Youtube",font=FONT_1,text_color="green")
