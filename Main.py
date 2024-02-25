@@ -7,6 +7,7 @@ from PIL import Image,ImageTk,ImageOps,ImageDraw
 import os
 from pathlib import Path
 import threading
+from CTkMessagebox import CTkMessagebox
 
 
 # for remove tk iconbit
@@ -49,38 +50,6 @@ is_search = False
 is_download = False
 exists_ok = False
 
-def toplevel_screen():      
-            toplevel = customtkinter.CTkToplevel(screen)
-            toplevel.title("WARNING")
-            toplevel.geometry("+%d+%d" % (screen.winfo_x()+60, screen.winfo_y()+240))
-            toplevel.geometry("250x100")
-            toplevel.resizable(False, False)
-            global is_search
-            is_search = False
-            label = customtkinter.CTkLabel(toplevel, text="invalid Youtube link!\nTry again with a valid link :)", font=FONT_5)
-            label.pack(padx=20, pady=20)
-            toplevel.grab_set()
-
-def prosess_on():      
-            proses = customtkinter.CTkToplevel(screen)
-            proses.title("WARNING")
-            proses.geometry("+%d+%d" % (screen.winfo_x()+30, screen.winfo_y()+240))
-            proses.geometry("350x100")
-            proses.resizable(False, False)
-
-            if is_download == True:
-                label = customtkinter.CTkLabel(proses, text="Download is already in progress", font=FONT_5)
-                label.pack(padx=20, pady=20)
-
-            elif exists_ok == True:
-                label = customtkinter.CTkLabel(proses, text="This file already exists", font=FONT_5)
-                label.pack(padx=20, pady=20) 
-                
-            else:
-                label = customtkinter.CTkLabel(proses, text="There is an ongoing process, please wait.", font=FONT_5)
-                label.pack(padx=20, pady=20)
-            proses.grab_set()
-
 
 def do_download(url): 
     try:
@@ -90,9 +59,7 @@ def do_download(url):
         music_mp3 =f"{music_title}.mp3"
         path_exists = os.path.exists(os.path.join(path_to_check,music_mp3))
         if path_exists == True:
-            exists_ok = True
-            is_download = False
-            prosess_on()
+            CTkMessagebox(title="Warning!",icon="warning", message="This file already exists!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
         else:
             loading_label = customtkinter.CTkLabel(master=screen,text="Please wait, Downloading...",font=FONT_1)
             loading_label.place(x=20,y=390)
@@ -111,7 +78,7 @@ def do_download(url):
 def start_download_thread():
     global is_download
     if is_download == True:
-         prosess_on()
+         CTkMessagebox(title="Warning!",icon="warning", message="Download is already in progress!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
     else:
         is_download = True
         thread = threading.Thread(target=do_download, args=(url,))
@@ -182,13 +149,15 @@ def about_music():
       Download_button.place(x=180,y=330)
 
 def do_search():
-    global url
+    global url, is_search
     music_link = link_entry.get()
     if music_link == "":
-        toplevel_screen()
+        is_search = False
+        CTkMessagebox(title="Warning!",icon="warning", message="Enter a link to search!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
     elif not music_link.startswith("https://youtu.be/"):
+        is_search = False
         link_entry.delete(0, END)
-        toplevel_screen()
+        CTkMessagebox(title="Warning!",icon="warning", message="Enter a vaild Youtube music link!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
     else:
         searching_label = customtkinter.CTkLabel(master=screen,text="Please wait, Searching...",font=FONT_1)
         searching_label.place(x=20,y=390)
@@ -199,16 +168,15 @@ def do_search():
         music_thub = yt.thumbnail_url
         music_title = yt.title
         searching_label.configure(text="")
-        global is_search
         is_search = False
         about_music()
 
 def search_thread():
     global is_search, is_download
     if is_search == True:
-        prosess_on()
+        CTkMessagebox(title="Warning!",icon="warning", message="There is an ongoing process, please wait!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
     elif is_download == True:
-        prosess_on()
+        CTkMessagebox(title="Warning!",icon="warning", message="Download is already in progress!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
     else:
         is_search = True
         thread = threading.Thread(target=do_search)
@@ -225,7 +193,7 @@ downloader_label = customtkinter.CTkLabel(master=screen,text="Downloader",font=F
 downloader_label.place(x=105,y=105)
 
 link_entry = customtkinter.CTkEntry(master=screen,
-                               placeholder_text="Enter Youtube music link",
+                               placeholder_text="Enter Youtube music link!",
                                width=260,
                                height=35,
                                border_width=2,
