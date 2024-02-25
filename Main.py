@@ -5,6 +5,8 @@ from pytube import YouTube
 import requests
 import time
 from PIL import Image,ImageTk
+import os
+from pathlib import Path
 
 
 
@@ -39,6 +41,7 @@ music_thub = ""
 music_title=""
 music_views=""
 music_rating=""
+yt = ""
 
 def toplevel_screen():
             
@@ -50,6 +53,15 @@ def toplevel_screen():
             label = customtkinter.CTkLabel(toplevel, text="invalid Youtube link!\nTry again with a valid link :)", font=FONT_5)
             label.pack(padx=20, pady=20)
             toplevel.grab_set()
+
+def download_music():
+      
+      path_to_download = str(os.path.join(Path.home(), 'Downloads'))
+      stream=yt.streams.filter(only_audio=True).first()
+      downloaded_file = stream.download(path_to_download)
+      base, ext = os.path.splitext(downloaded_file)
+      new_file = base + '.mp3'
+      os.rename(downloaded_file, new_file)
 
 def about_music():
       url = music_thub
@@ -72,6 +84,7 @@ def about_music():
                                  text_color="white",
                                  hover_color="light green",
                                  font=FONT_4,
+                                 command=download_music
                                  )
       Download_button.place(x=180,y=310)
 
@@ -84,11 +97,11 @@ def search_button():
             toplevel_screen()
         else:
             link_entry.delete(0, END)
+            global yt
             yt = YouTube(music_link)
             global music_title,music_thub
             music_title = yt.title
             music_thub = yt.thumbnail_url
-            yt.streams.filter(only_audio=True)
             about_music()
 
 
