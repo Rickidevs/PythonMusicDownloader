@@ -42,8 +42,8 @@ music_title=""
 yt = ""
 url = ""
 
-def toplevel_screen():
-            
+
+def toplevel_screen():      
             toplevel = customtkinter.CTkToplevel(screen)
             toplevel.title("WARNING")
             toplevel.geometry("+%d+%d" % (screen.winfo_x()+90, screen.winfo_y()+240))
@@ -54,27 +54,29 @@ def toplevel_screen():
             toplevel.grab_set()
 
 
-def do_download(url): 
+def do_download(url,Download_button): 
     try:
+        loading_label = customtkinter.CTkLabel(master=screen,text="Please wait loading...",font=FONT_1)
+        loading_label.place(x=20,y=360)
         path_to_download = str(os.path.join(Path.home(), 'Downloads'))
         stream = yt.streams.filter(only_audio=True).first()
         downloaded_file = stream.download(path_to_download)
         base, ext = os.path.splitext(downloaded_file)
         new_file = base + '.mp3'
         os.rename(downloaded_file, new_file)
-    
-        # İndirme tamamlandığında arayüz değişiklikleri
-        copleted_label = customtkinter.CTkLabel(master=screen,text=f"Completed. You can find it in this: {path_to_download}",font=FONT_5,wraplength=300)
-        copleted_label.place(x=30,y=360)
+        loading_label.configure(text="")
+        Download_button.configure(state="normal")
+        copleted_label = customtkinter.CTkLabel(master=screen,text=f"Completed: {path_to_download}",font=FONT_5,wraplength=300)
+        copleted_label.place(x=20,y=360)
     except Exception as e:
-        # İndirme hatası durumunda bir mesaj gösterme veya loglama mekanizması
         print(f"Download error: {e}") 
 
-def start_download_thread():
+def start_download_thread(Download_button):
+    Download_button.configure(state="disabled")
     thread = threading.Thread(target=do_download, args=(url,))
     thread.start()
 
-def about_music():
+def about_music(Download_button):
       global url
       url = music_thub
       image = Image.open(requests.get(url, stream=True).raw)
@@ -108,6 +110,8 @@ def about_music():
       Download_button.place(x=180,y=310)
 
 def do_search():
+    searching_label = customtkinter.CTkLabel(master=screen,text="Please wait Searching...",font=FONT_1)
+    searching_label.place(x=20,y=250)
     global url
     music_link = link_entry.get()
     if music_link == "":
@@ -122,6 +126,7 @@ def do_search():
         global music_title, music_thub
         music_thub = yt.thumbnail_url
         music_title = yt.title
+        searching_label.configure(text="")
         about_music()
 
 def search_thread():
