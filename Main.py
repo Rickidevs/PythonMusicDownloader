@@ -37,6 +37,8 @@ FONT_6=("Times New Roman",20,"bold")
 
 music_thub = ""
 music_title=""
+music_views=""
+music_rating=""
 
 def toplevel_screen():
             
@@ -59,18 +61,31 @@ def about_music():
       music_thub_label.place(x=20,y=230)
       music_title_label = customtkinter.CTkLabel(master=screen,text=music_title,font=FONT_6,wraplength=200)
       music_title_label.place(x=168, y= 230)
+      Download_button = customtkinter.CTkButton(master=screen,
+                                 width=80,
+                                 height=30,
+                                 border_color="grey",
+                                 border_width=2,
+                                 corner_radius=13,
+                                 fg_color="green",
+                                 text="Download",
+                                 text_color="white",
+                                 hover_color="light green",
+                                 font=FONT_4,
+                                 )
+      Download_button.place(x=180,y=310)
 
 def search_button():
         music_link = link_entry.get()
         if music_link == "":
             toplevel_screen()
         elif not music_link.startswith("https://youtu.be/"):
+            link_entry.delete(0, END)
             toplevel_screen()
         else:
+            link_entry.delete(0, END)
             yt = YouTube(music_link)
-            global music_title
-            global music_thub
-            global minute , second
+            global music_title,music_thub
             music_title = yt.title
             music_thub = yt.thumbnail_url
             yt.streams.filter(only_audio=True)
