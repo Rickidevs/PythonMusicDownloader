@@ -9,8 +9,6 @@ import os
 from pathlib import Path
 
 
-
-
 # for remove tk iconbit
 ICON = zlib.decompress(base64.b64decode('eJxjYGAEQgEBBiDJwZDBy'
     'sAgxsDAoAHEQCEGBQaIOAg4sDIgACMUj4JRMApGwQgF/ykEAFXxQRc='))
@@ -62,7 +60,7 @@ def download_music():
       base, ext = os.path.splitext(downloaded_file)
       new_file = base + '.mp3'
       os.rename(downloaded_file, new_file)
-      copleted_label = customtkinter.CTkLabel(master=screen,text=f"Download Completed, you can find it in this: {path_to_download}",font=FONT_5,wraplength=300)
+      copleted_label = customtkinter.CTkLabel(master=screen,text=f"Completed. You can find it in this: {path_to_download}",font=FONT_5,wraplength=300)
       copleted_label.place(x=30,y=360)
 
 
