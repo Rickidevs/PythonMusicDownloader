@@ -1,25 +1,7 @@
-from tkinter import *
-import customtkinter
-import tempfile, base64, zlib
-from pytube import YouTube
-import requests
-from PIL import Image,ImageTk,ImageOps,ImageDraw 
-import os
-from pathlib import Path
-import threading
-from CTkMessagebox import CTkMessagebox
+from imports import *
 
 
-# for remove tk iconbit
-ICON = zlib.decompress(base64.b64decode('eJxjYGAEQgEBBiDJwZDBy'
-    'sAgxsDAoAHEQCEGBQaIOAg4sDIgACMUj4JRMApGwQgF/ykEAFXxQRc='))
-
-_, ICON_PATH = tempfile.mkstemp()
-with open(ICON_PATH, 'wb') as icon_file:
-    icon_file.write(ICON)
-
-
-# Set windows and configure
+#--------------- SCREEN SETTINGS -------------#
 screen = customtkinter.CTk()
 screen.geometry("400x500")
 customtkinter.set_appearance_mode("dark")
@@ -28,28 +10,20 @@ screen.iconbitmap(default=ICON_PATH)
 screen.resizable(False, False)
 
 
-#Fonts for text and button
-FONT_1=("Arial",25,"bold")
-FONT_2=("Arial",50,"bold")
-FONT_3=("Arial",30,"bold")
-FONT_4=("Arial",15)
-FONT_5=("Arial",16,"bold")
-FONT_6=("Times New Roman",20,"bold")
-FONT_7=("Arial",13)
+#---------- GLOBAL VARIABLES ---------#
 
-#global variable
 music_thub = ""
 music_title=""
 yt = ""
 url = ""
 music_title_label = ""
 music_thub_label = ""
-
-#booleans
 is_search = False
 is_download = False
 exists_ok = False
 
+
+#------------ FUNCTIONS ---------------------#
 
 def do_download(url): 
     try:
@@ -59,7 +33,8 @@ def do_download(url):
         music_mp3 =f"{music_title}.mp3"
         path_exists = os.path.exists(os.path.join(path_to_check,music_mp3))
         if path_exists == True:
-            CTkMessagebox(title="Warning!",icon="warning", message="This file already exists!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
+            Download_button.configure(text="Downloaded!")
+            is_download = False
         else:
             loading_label = customtkinter.CTkLabel(master=screen,text="Please wait, Downloading...",font=FONT_1)
             loading_label.place(x=20,y=390)
@@ -78,24 +53,23 @@ def do_download(url):
 def start_download_thread():
     global is_download
     if is_download == True:
-         CTkMessagebox(title="Warning!",icon="warning", message="Download is already in progress!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
+         Download_button.configure(text="Downloading")
     else:
         is_download = True
         thread = threading.Thread(target=do_download, args=(url,))
         thread.start()
 
 def about_music():
-      global music_title_label, music_thub_label,url
+      global music_title_label, music_thub_label,url,Download_button
       url = music_thub
       image = Image.open(requests.get(url, stream=True).raw)
       new_size = (170, 140)
 
-# Köşeleri yuvarlatma fonksiyonu
       def round_corners(im, radius):
-            circle = Image.new('L', (radius * 2, radius * 2), 0)  # Siyah daire oluşturun
+            circle = Image.new('L', (radius * 2, radius * 2), 0)  
 
             draw = ImageDraw.Draw(circle)
-            draw.ellipse((0, 0, radius * 2, radius * 2), fill=255)  # Beyaz elips ile doldur
+            draw.ellipse((0, 0, radius * 2, radius * 2), fill=255) 
             
             alpha = Image.new('L', im.size, 255)
             w, h = im.size
@@ -106,7 +80,6 @@ def about_music():
             im.putalpha(alpha)
             return im
 
-    # Köşeleri yuvarlatılmış resim oluşturun
       transformed_image = round_corners(image.resize(new_size), 10)
 
       bg_modern_label = customtkinter.CTkFrame(master=screen,
@@ -131,6 +104,8 @@ def about_music():
             music_title_label.place(x=168, y= 250)
       else:
             music_title_label.place(x=168, y= 250)
+        
+      search_button.configure(text="Search")
 
       Download_button = customtkinter.CTkButton(master=screen,
                                  width=80,
@@ -153,11 +128,11 @@ def do_search():
     music_link = link_entry.get()
     if music_link == "":
         is_search = False
-        CTkMessagebox(title="Warning!",icon="warning", message="Enter a link to search!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
+        link_entry.configure(border_color="red",placeholder_text_color="red")
     elif not music_link.startswith("https://youtu.be/"):
         is_search = False
         link_entry.delete(0, END)
-        CTkMessagebox(title="Warning!",icon="warning", message="Enter a vaild Youtube music link!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
+        link_entry.configure(border_color="red",placeholder_text_color="red")
     else:
         searching_label = customtkinter.CTkLabel(master=screen,text="Please wait, Searching...",font=FONT_1)
         searching_label.place(x=20,y=390)
@@ -174,9 +149,9 @@ def do_search():
 def search_thread():
     global is_search, is_download
     if is_search == True:
-        CTkMessagebox(title="Warning!",icon="warning", message="There is an ongoing process, please wait!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
+        search_button.configure(text="Wait!")
     elif is_download == True:
-        CTkMessagebox(title="Warning!",icon="warning", message="Download is already in progress!", option_1="OK",width=400,height=150, font=FONT_4,button_color="green",title_color="green",button_hover_color="light green",sound=ON, button_width= 10)
+        Download_button.configure(text="Wait!")
     else:
         is_search = True
         thread = threading.Thread(target=do_search)
